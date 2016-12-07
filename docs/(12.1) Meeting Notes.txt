@@ -1,0 +1,12 @@
+Meeting (12/1) for 697L Final Project
+
+- Understanding how adversarial training works
+  -> minimax game
+  -> transformer   ...maximizes probability of discriminator error
+                   ...minimizes correlation input / output
+  -> discriminator ...minimize error between training data / transformed data
+  
+- Next steps
+  -> Explain projection / inverse projection transform architecture, why it's useful
+  -> Explain affine - nonlinearity architecture as alternative
+  -> Supervised training of adversarial pair

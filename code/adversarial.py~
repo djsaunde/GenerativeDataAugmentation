@@ -1,0 +1,38 @@
+
+
+class AdversarialPair(object):
+    '''
+    This class will contain logic for the transformer, discriminator network
+    pair, and contain a composite loss function and parameters so that we may
+    use the Solver API to which we pass this pair.
+    '''
+    
+    def __init__(self, transformer=Transformer(), discriminator=Discriminator()):
+        '''
+        Initializes the pair of adversarial networks.
+        
+        input:
+            transformer: a Transformer object
+            discriminator: a Discriminator object
+            
+        output:
+            initialized adversarial pair
+        '''
+        
+        # store parameters from both networks
+        self.params = transformer.params.update(discriminator.params)
+        
+        
+       
+    def loss(self, X, y=None):
+        '''
+        
+        '''
+        
+    
+    def get_params(self):
+        '''
+        
+        '''
+        return self.generator.get_params() + self.discriminator.get_params()
+        

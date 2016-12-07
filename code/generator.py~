@@ -1,0 +1,21 @@
+from __future__ import division
+
+import numpy as np
+
+from layers import *
+from layer_utils import *
+from dnn import *
+
+
+class Generator(Transformer):
+    '''
+    This class encapsulates all the logic involved with the generator
+    network.
+    
+    The generator tries to maximize the probability that the discriminator classifies
+    the input generated images as true training dataset images.
+    
+    In this implementation, we initialize the network with a transformer network.
+    '''
+    
+    pass
