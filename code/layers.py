@@ -723,6 +723,31 @@ def softmax_loss(x, y):
   dx /= N
   return loss, dx
   
+
+def inverse_softmax_loss(x, y):
+  """
+  Computes the loss and gradient for softmax classification.
+
+  Inputs:
+  - x: Input data, of shape (N, C) where x[i, j] is the score for the jth class
+    for the ith input.
+  - y: Vector of labels, of shape (N,) where y[i] is the label for x[i] and
+    0 <= y[i] < C
+
+  Returns a tuple of:
+  - loss: Scalar giving the loss
+  - dx: Gradient of the loss with respect to x
+  """
+  probs = np.exp(x - np.max(x, axis=1, keepdims=True))
+  probs /= np.sum(probs, axis=1, keepdims=True)
+  probs = 1 - probs
+  N = x.shape[0]
+  loss = -np.sum(np.log(probs[np.arange(N), y])) / N
+  dx = probs.copy()
+  dx[np.arange(N), y] -= 1
+  dx /= N
+  return loss, dx
+  
   
 def correlation_loss(X, transform):
   """
@@ -736,6 +761,14 @@ def correlation_loss(X, transform):
   Returns:
   - the correlation loss as defined by trace(X * transform) / | X * transform |
   """
-  return np.linalg.norm(X) * np.linalg.norm(np.linalg.norm(transform)) / np.dot(X, transform.T)
+  
+  correlation = np.sum(np.linalg.norm(X) * np.linalg.norm(np.linalg.norm(transform)) / np.dot(X, transform.T), axis=1)
+  
+  print correlation.shape
+  
+  loss = np.sum(correlation) / X.shape[0]
+  dx = correlation.copy()[np.arange(X.shape[0])] / X.shape[0]
+  
+  return loss, dx
   
 

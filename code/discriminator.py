@@ -76,5 +76,36 @@ class Discriminator(ConvolutionalNetwork):
         return super(Discriminator, self).loss(X, y)
 
 
+    def transformer_backward(self, transformer_loss, transformer_dout):
+        '''
+        Simply, this function will return the derivative of the input to the network
+        with respect to the inverse loss on the class scores (want to maximize the probability
+        that the discriminator mistakes transformed data for real data. 
+        '''
+        
+        grads = {}
+        
+        # calculating derivatives of affine final layer (upstream derivative dout) with respect to h4, W5, and b5
+        dh2, dW3, grads['b3'] = affine_backward(transformer_dout, self.cache['scores_cache'])
+        
+        # calculating derivatives of affine -> relu sandwich layer (upstream derivative dh2) with respect to h3, W4, and b4
+        dh1, dW2, grads['b2'], grads['gamma2'], grads['beta2'] = affine_norm_relu_backward(dh2, self.cache['h2_cache'])
+        
+        # calculating derivatives of conv -> relu -> max-pool layer (upstream derivative dh1) with respect to x, W3, and b3
+        dx, dW1, grads['b1'], grads['gamma1'], grads['beta1'] = conv_norm_relu_pool_backward(dh1, self.cache['h1_cache'])
+        
+        # calculating L2 regularization for each layer
+        W1_reg_loss = 0.5 * self.reg * np.sum(self.params['W1'] * self.params['W1'])
+        W2_reg_loss = 0.5 * self.reg * np.sum(self.params['W2'] * self.params['W2'])
+        W3_reg_loss = 0.5 * self.reg * np.sum(self.params['W3'] * self.params['W3'])
+        
+        # adding L2 regularization to loss
+        transformer_loss += W1_reg_loss + W2_reg_loss + W3_reg_loss
+        
+        # adding L2 regularization to input gradient
+        dx = dx + dx * self.reg
+
+        return dx, transformer_loss
+
                 
         

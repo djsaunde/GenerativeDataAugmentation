@@ -173,5 +173,5 @@ class ConvolutionalNetwork(object):
     # adding L2 regularization to input gradient
     grads['dx'] = dx + dx * self.reg
 
-    return loss, grads
+    return loss, grads, scores
     

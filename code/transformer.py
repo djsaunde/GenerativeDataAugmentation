@@ -122,14 +122,16 @@ class Transformer(object):
         
         # initializing variables for loss and gradients (we try to maximize the log 
         # loss of the discriminator model as in the Goodfellow paper)
-        loss, grads = -np.log(loss), {}
+        grads = {}
         
         # adding correlation loss between the original input and the transformed input
         X = self.cache['X']
         X = X.reshape(transform.shape)
         
         # TODO: figure out how to incorporate the correlation loss...
-        # loss += correlation_loss(X, transform)
+        # corr_loss, dout = correlation_loss(X, transform)
+        
+        # dtransform += dout
         
         # adding regularization loss to the total loss
         # this is calculated by summing over all squared weights of the network
